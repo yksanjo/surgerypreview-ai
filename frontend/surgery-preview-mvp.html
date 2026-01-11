@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SurgeryPreview - See Your Results Before Surgery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A4D68;
+            --primary-light: #088395;
+            --accent: #05BFDB;
+            --neutral-900: #1a1a1a;
+            --neutral-800: #2d2d2d;
+            --neutral-100: #f8f9fa;
+            --neutral-50: #ffffff;
+            --success: #00C9A7;
+            --warning: #FF6B6B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--neutral-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background gradient */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(-45deg, #0A4D68, #088395, #05BFDB, #00C9A7);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--neutral-800);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'DM Serif Display', serif;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--neutral-800);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .upload-section {
+            margin: 3rem 0;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(5, 191, 219, 0.1), rgba(0, 201, 167, 0.1));
+            border-radius: 16px;
+            border: 2px dashed var(--accent);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-section:hover {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(5, 191, 219, 0.15), rgba(0, 201, 167, 0.15));
+            transform: translateY(-2px);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .procedures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .procedure-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .procedure-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .procedure-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .procedure-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent);
+        }
+        
+        .procedure-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .procedure-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .procedure-price {
+            color: var(--neutral-800);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .procedure-tag {
+            display: inline-block;
+            background: rgba(0, 201, 167, 0.15);
+            color: var(--success);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .cta-section {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 3rem 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 1.25rem 3rem;
+            border-radius: 50px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(8, 131, 149, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(8, 131, 149, 0.4);
+        }
+        
+        .how-it-works {
+            margin: 4rem 0;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 24px;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 5px 15px rgba(5, 191, 219, 0.3);
+        }
+        
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .step-desc {
+            color: var(--neutral-800);
+            line-height: 1.6;
+        }
+        
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--neutral-800);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .trust-icon {
+            font-size: 1.5rem;
+            color: var(--success);
+        }
+        
+        footer {
+            background: var(--neutral-900);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .disclaimer {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--neutral-800);
+            text-align: left;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.4s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--neutral-800);
+            transition: color 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--warning);
+        }
+        
+        .price-tag {
+            background: linear-gradient(135deg, var(--success), var(--accent));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            display: inline-block;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 2rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                gap: 1rem;
+            }
+            
+            .procedures-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="badge">🔥 127 people used this today</span>
+                <h1>See Your <span class="highlight">Surgery Results</span> Before You Commit</h1>
+                <p class="subtitle">Upload your photo, select a procedure, and get matched with NYC's top board-certified plastic surgeons with instant price quotes.</p>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">1,247</div>
+                        <div class="stat-label">Previews This Month</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Verified Surgeons</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">$8K-$15K</div>
+                        <div class="stat-label">Average Savings</div>
+                    </div>
+                </div>
+                
+                <div class="upload-section" onclick="openModal()">
+                    <div class="upload-icon">📸</div>
+                    <h3>Upload Your Photo & Get Started</h3>
+                    <p style="margin-top: 1rem; color: var(--neutral-800);">Secure • Private • Instant Matching</p>
+                </div>
+                
+                <div class="trust-badges">
+                    <div class="trust-badge">
+                        <span class="trust-icon">✓</span>
+                        Board-Certified Only
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-icon">🔒</span>
+                        HIPAA Compliant
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-icon">⚡</span>
+                        Results in 60 Seconds
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Procedures Section -->
+    <section class="container" style="padding: 4rem 2rem;">
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 3rem; text-align: center; margin-bottom: 3rem; color: var(--primary);">Popular Procedures</h2>
+        
+        <div class="procedures-grid">
+            <div class="procedure-card" onclick="selectProcedure('rhinoplasty')">
+                <div class="procedure-icon">👃</div>
+                <div class="procedure-name">Rhinoplasty</div>
+                <div class="procedure-price">$7,000 - $15,000</div>
+                <span class="procedure-tag">Most Popular</span>
+            </div>
+            
+            <div class="procedure-card" onclick="selectProcedure('breast-aug')">
+                <div class="procedure-icon">💎</div>
+                <div class="procedure-name">Breast Augmentation</div>
+                <div class="procedure-price">$8,000 - $12,000</div>
+                <span class="procedure-tag">Top Rated</span>
+            </div>
+            
+            <div class="procedure-card" onclick="selectProcedure('facelift')">
+                <div class="procedure-icon">✨</div>
+                <div class="procedure-name">Facelift</div>
+                <div class="procedure-price">$12,000 - $25,000</div>
+            </div>
+            
+            <div class="procedure-card" onclick="selectProcedure('liposuction')">
+                <div class="procedure-icon">🎯</div>
+                <div class="procedure-name">Liposuction</div>
+                <div class="procedure-price">$4,000 - $10,000</div>
+            </div>
+            
+            <div class="procedure-card" onclick="selectProcedure('bbl')">
+                <div class="procedure-icon">🍑</div>
+                <div class="procedure-name">Brazilian Butt Lift</div>
+                <div class="procedure-price">$8,000 - $15,000</div>
+                <span class="procedure-tag">Trending</span>
+            </div>
+            
+            <div class="procedure-card" onclick="selectProcedure('chin')">
+                <div class="procedure-icon">💪</div>
+                <div class="procedure-name">Chin Augmentation</div>
+                <div class="procedure-price">$3,000 - $7,000</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="container">
+        <div class="how-it-works">
+            <h2 style="font-family: 'DM Serif Display', serif; font-size: 3rem; text-align: center; color: var(--primary);">How It Works</h2>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Upload Photo</div>
+                    <div class="step-desc">Securely upload your photo. We delete it within 24 hours.</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Choose Procedure</div>
+                    <div class="step-desc">Select what you'd like to enhance and your preferences.</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Get Matched</div>
+                    <div class="step-desc">Instantly matched with top 3 surgeons with verified reviews and price quotes.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="container">
+        <div class="cta-section">
+            <h2 style="font-family: 'DM Serif Display', serif; font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary);">Ready to See Your Future?</h2>
+            <p style="font-size: 1.125rem; color: var(--neutral-800); margin-bottom: 2rem;">Join 1,247 people who found their perfect surgeon this month</p>
+            <button class="cta-button" onclick="openModal()">Get Started Now</button>
+        </div>
+    </section>
+    
+    <!-- Disclaimer -->
+    <section class="container" style="padding: 2rem;">
+        <div class="disclaimer">
+            <strong>⚠️ Medical Disclaimer:</strong> This service provides preliminary consultations and surgeon matching only. It does not constitute medical advice. All surgical procedures carry risks. Consult with board-certified plastic surgeons before making any decisions. Results vary by individual.
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p style="margin-bottom: 1rem;">&copy; 2026 SurgeryPreview. All rights reserved.</p>
+            <p style="font-size: 0.875rem; opacity: 0.8;">Privacy Policy | Terms of Service | For Surgeons</p>
+        </div>
+    </footer>
+    
+    <!-- Modal -->
+    <div class="modal" id="consultModal">
+        <div class="modal-content" style="position: relative;">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 style="font-family: 'DM Serif Display', serif; font-size: 2rem; margin-bottom: 1rem; color: var(--primary);">Get Your Consultation</h2>
+            <p style="margin-bottom: 2rem; color: var(--neutral-800);">Fill out the form below and we'll match you with the top 3 surgeons for your needs.</p>
+            
+            <form id="consultForm" onsubmit="submitForm(event)">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="procedure">Desired Procedure *</label>
+                    <select id="procedure" name="procedure" required>
+                        <option value="">Select a procedure</option>
+                        <option value="rhinoplasty">Rhinoplasty (Nose Job)</option>
+                        <option value="breast-aug">Breast Augmentation</option>
+                        <option value="facelift">Facelift</option>
+                        <option value="liposuction">Liposuction</option>
+                        <option value="bbl">Brazilian Butt Lift</option>
+                        <option value="chin">Chin Augmentation</option>
+                        <option value="tummy-tuck">Tummy Tuck</option>
+                        <option value="blepharoplasty">Eyelid Surgery</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Preferred Location *</label>
+                    <select id="location" name="location" required>
+                        <option value="">Select location</option>
+                        <option value="nyc-manhattan">NYC - Manhattan</option>
+                        <option value="nyc-brooklyn">NYC - Brooklyn</option>
+                        <option value="nyc-queens">NYC - Queens</option>
+                        <option value="long-island">Long Island</option>
+                        <option value="nj">New Jersey</option>
+                        <option value="la">Los Angeles (Coming Soon)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="photo">Upload Your Photo (Optional)</label>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                    <button type="button" style="width: 100%; padding: 1rem; border: 2px dashed var(--accent); background: transparent; border-radius: 12px; cursor: pointer; color: var(--primary); font-weight: 600;" onclick="document.getElementById('photo').click()">
+                        📸 Click to Upload Photo
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="timeline">When are you looking to have surgery?</label>
+                    <select id="timeline" name="timeline">
+                        <option value="1-3-months">1-3 months</option>
+                        <option value="3-6-months">3-6 months</option>
+                        <option value="6-12-months">6-12 months</option>
+                        <option value="just-researching">Just researching</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Additional Notes or Questions</label>
+                    <textarea id="notes" name="notes" rows="4" placeholder="Any specific concerns or questions for the surgeon?"></textarea>
+                </div>
+                
+                <button type="submit" class="cta-button" style="width: 100%; margin-top: 1rem;">
+                    Get Matched with Top Surgeons - Free
+                </button>
+                
+                <p style="text-align: center; font-size: 0.875rem; color: var(--neutral-800); margin-top: 1.5rem;">
+                    🔒 Your information is secure and will only be shared with matched surgeons
+                </p>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let selectedProcedure = '';
+        
+        function openModal() {
+            document.getElementById('consultModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            document.getElementById('consultModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function selectProcedure(procedure) {
+            selectedProcedure = procedure;
+            document.getElementById('procedure').value = procedure;
+            openModal();
+        }
+        
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Here's where you'd integrate with your backend
+            // For MVP, you can use:
+            // 1. Google Sheets API (free, simple)
+            // 2. Airtable API (free tier, 1,200 records/base)
+            // 3. Webhook to Zapier/Make.com → sends to your CRM
+            // 4. Simple email via FormSubmit.co or Formspree
+            
+            console.log('Lead captured:', data);
+            
+            // Show success message
+            alert('🎉 Success! We\'re matching you with the top 3 surgeons in your area. Check your email in the next 5 minutes for your personalized matches and price quotes.');
+            
+            // Close modal
+            closeModal();
+            
+            // Reset form
+            event.target.reset();
+            
+            // In production, send this data to your backend:
+            /*
+            const response = await fetch('/api/leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            */
+            
+            // For MVP surgeon referral model:
+            // 1. Capture lead in Airtable/Google Sheets
+            // 2. Send lead to 3 matched surgeons via email/webhook
+            // 3. Track which surgeon books the consultation
+            // 4. Charge surgeon $50-150 per booked consultation
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('consultModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // Track button clicks (integrate with Google Analytics, Mixpanel, etc.)
+        document.querySelectorAll('.cta-button, .procedure-card, .upload-section').forEach(element => {
+            element.addEventListener('click', function() {
+                // Analytics tracking
+                console.log('User interaction:', this.className);
+                // gtag('event', 'click', { 'event_category': 'engagement' });
+            });
+        });
+    </script>
+</body>
+</html>
